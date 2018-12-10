@@ -1,0 +1,8 @@
+version: '2'
+services:
+  reverseproxy:
+     image: nginx-reverseproxy
+     ports: 
+        - "9999:8080"
+  personservice:
+      image: person_service

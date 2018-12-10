@@ -1,0 +1,37 @@
+#Di terminal, tempatnya di folder hasil pull
+#Build Dockernya
+docker build -t name:person_service /home/bujang/person-service-versi1_dockerized_auth
+
+#Buat Containernya
+docker container create name:person_service
+
+#Run container name:person_service
+docker run -d --name person1 name:person_service
+docker run -d --name person2 name:person_service
+docker run -d --name person3 name:person_service
+
+#Cari IP Cpntainernya
+docker inspect --format "{{ .Id }} {{ .Name }} {{ .NetworkSettings.IPAddress }}" $(docker ps -q)
+
+#Minta autentikasi
+curl -vvvv http://172.17.0.2:5000/auth -d '{"username" : "slamet", "password": "kaoskakimerah"}'
+
+#Kalo udah dapet autentikasi, ganti Autorization dengan authyang didapat sebelumnya
+curl -vvvv http://172.17.0.2:5000/personlist -H 'Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNsYW1ldCIsInBhc3N3b3JkIjoia2Fvc2tha2ltZXJhaCIsImRldGFpbCI6eyJuYW1hIjoiU2xhbWV0IFJhaGFyam8iLCJhbGFtYXQiOiJNZW50ZW5nIn0sImV4cCI6MTU0MjYzNzIyNX0.7nXseCHlmqIEAJ0swRyS90ZzKTsz8BU2Xxm_mqFapnA'
+
+#load balancing
+cd reverseproxy
+docker build -t nginx-reverseproxy /home/bujang/person-service-versi1_dockerized_auth/reverseproxy
+
+#test loadbalancing
+curl http://localhost:9999/version { "info": "0.01" }
+curl http://localhost:9999/version { "info": "0.01" }
+curl http://localhost:9999/version { "info": "0.01" }
+#tes 3x, ipnya ganti atau engga
+
+#kalo udah, bisa run ini
+#minta auth
+curl -vvvv http://localhost:9999/auth -d '{"username" : "slamet", "password": "kaoskakimerah"}'
+#Kalo udah dapet autentikasi, ganti Autorization dengan authyang didapat sebelumnya
+curl -vvvv http://localhost:9999/personlist -H 'Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNsYW1ldCIsInBhc3N3b3JkIjoia2Fvc2tha2ltZXJhaCIsImRldGFpbCI6eyJuYW1hIjoiU2xhbWV0IFJhaGFyam8iLCJhbGFtYXQiOiJNZW50ZW5nIn0sImV4cCI6MTU0MjYzNzIyNX0.7nXseCHlmqIEAJ0swRyS90ZzKTsz8BU2Xxm_mqFapnA'
+
