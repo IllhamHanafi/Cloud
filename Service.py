@@ -67,7 +67,7 @@ class Auth(Resource):
 		if (auth_result is not None):
 			return jsonify(status='OK',token=auth_result)
 		else:
-			return jsoninfy(status='ERROR')
+			return jsonify(status='ERROR')
 
 
 #definisi rest api interface
