@@ -9,7 +9,7 @@ def home():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
-        return "Login Sukses"
+        return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def do_admin_login():
