@@ -19,11 +19,12 @@
         {% include 'layout/sidebar.html' %}
         <div class="main-panel">
             {% include 'layout/navbar.html' %}
-            <div class="content">
-                <div class="container-fluid">
-                    <!-- your content here -->
-                </div>
-            </div>
+            <section class="content">
+                <header>
+                    {% block header %} {% endblock %}
+                </header>
+                {% block content %} {% endblock %}
+            </section>
             {% include 'layout/footer.html' %}
         </div>
     </div>
