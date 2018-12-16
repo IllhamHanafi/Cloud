@@ -51,10 +51,16 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    global USER_UPLOAD_FOLDER
     if request.method == 'POST':
         if users_list.add(request.form['username'], request.form['password']):
             flash('Create Account Success !')
             session['logged_in'] = True
+            USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
+            if not os.path.exists(USER_UPLOAD_FOLDER):
+                os.makedirs(USER_UPLOAD_FOLDER)
+            print USER_UPLOAD_FOLDER
+            app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
             return render_template('home.html')
         else:
             flash('Username Already Exist !')
