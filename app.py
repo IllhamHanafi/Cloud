@@ -7,7 +7,9 @@ import os
 app = Flask(__name__)
 users_list = Users_Model()
 UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
+USER_UPLOAD_FOLDER = '/home/bujang/dummy'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
+app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -35,14 +37,31 @@ def home():
         return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
-def do_admin_login():
+def login():
+    global USER_UPLOAD_FOLDER
 #    if request.form['username'] == 'admin' and request.form['password'] == 'admin':
 #        session['logged_in'] = True
     if users_list.find(request.form['username'], request.form['password']):
         session['logged_in'] = True
+        USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
+        app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
     else:
         flash('Wrong Username / Password')
     return home()
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        if users_list.add(request.form['username'], request.form['password']):
+            flash('Create Account Success !')
+            session['logged_in'] = True
+            return render_template('home.html')
+        else:
+            flash('Username Already Exist !')
+            return render_template('register.html')
+    else:
+        return render_template('register.html')
+
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
@@ -51,7 +70,10 @@ def logout():
 
 @app.route("/upload")
 def upload():
-    return render_template('upload.html', filelist=make_tree(UPLOAD_FOLDER))
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('upload.html', filelist=make_tree(USER_UPLOAD_FOLDER))
 
 @app.route("/uploader", methods=['GET', 'POST'])
 def uploader():
@@ -69,7 +91,7 @@ def uploader():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filename = filename.replace("_", " ")
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.config['USER_UPLOAD_FOLDER'], filename))
 #            return redirect(url_for('uploaded_file',
 #                                    filename=filename))
             return 'file uploaded successfully'
@@ -78,7 +100,5 @@ def uploader():
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #max upload 16 mb
-    filelist = make_tree(UPLOAD_FOLDER)
     app.run(debug=True)
