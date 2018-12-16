@@ -64,6 +64,7 @@ def uploader():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            filename = filename.replace("_", " ")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 #            return redirect(url_for('uploaded_file',
 #                                    filename=filename))
