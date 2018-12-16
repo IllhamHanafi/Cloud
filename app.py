@@ -1,9 +1,11 @@
 from flask import Flask
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
 from werkzeug.utils import secure_filename
+from Users_Model import *
 import os
 
 app = Flask(__name__)
+users_list = Users_Model()
 UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 
@@ -34,7 +36,9 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def do_admin_login():
-    if request.form['username'] == 'admin' and request.form['password'] == 'admin':
+#    if request.form['username'] == 'admin' and request.form['password'] == 'admin':
+#        session['logged_in'] = True
+    if users_list.find(request.form['username'], request.form['password']):
         session['logged_in'] = True
     else:
         flash('Wrong Username / Password')
