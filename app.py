@@ -35,7 +35,7 @@ def home():
         return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
-def do_admin_login():
+def login():
 #    if request.form['username'] == 'admin' and request.form['password'] == 'admin':
 #        session['logged_in'] = True
     if users_list.find(request.form['username'], request.form['password']):
@@ -44,6 +44,20 @@ def do_admin_login():
         flash('Wrong Username / Password')
     return home()
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        if users_list.add(request.form['username'], request.form['password']):
+            flash('Create Account Success !')
+            session['logged_in'] = True
+            return render_template('home.html')
+        else:
+            flash('Username Already Exist !')
+            return render_template('register.html')
+    else:
+        return render_template('register.html')
+
+
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
     session['logged_in'] = False
@@ -51,7 +65,10 @@ def logout():
 
 @app.route("/upload")
 def upload():
-    return render_template('upload.html', filelist=make_tree(UPLOAD_FOLDER))
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('upload.html', filelist=make_tree(UPLOAD_FOLDER))
 
 @app.route("/uploader", methods=['GET', 'POST'])
 def uploader():

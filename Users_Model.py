@@ -16,10 +16,14 @@ class Users_Model(object):
 		except KeyError:
 			self.db.dcreate('userdb')
 	def add(self,username='',password=''):
+		for x in self.list():
+			data = self.get(x)
+			if (data['username']==username):
+					return False
 		id = uuid.uuid4()
-		p = { 'username' : username, 'password': password}
-		self.db.dadd('userdb',( "{}" .  format(str(id)) ,  p ))
-		return self.db.get(id)
+		p = {'username': username, 'password': password}
+		self.db.dadd('userdb', ("{}".format(str(id)), p))
+		return True
 	def list(self):
 		return self.db.dgetall('userdb')
 	def get(self,id):
@@ -50,6 +54,5 @@ class Users_Model(object):
 if __name__ == '__main__':
 	users = Users_Model()
 	#users.add('admin', 'admin')
-	#print users.find('notfound')
 	#print users.find('slamet')
 
