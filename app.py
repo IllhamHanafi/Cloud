@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 users_list = Users_Model()
 UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
-USER_UPLOAD_FOLDER = '/home/bujang/dummy'
+USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
 
@@ -39,14 +39,13 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global USER_UPLOAD_FOLDER
-#    if request.form['username'] == 'admin' and request.form['password'] == 'admin':
-#        session['logged_in'] = True
-    if users_list.find(request.form['username'], request.form['password']):
-        session['logged_in'] = True
-        USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
-        app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
-    else:
-        flash('Wrong Username / Password')
+    if request.method == 'POST':
+        if users_list.find(request.form['username'], request.form['password']):
+            session['logged_in'] = True
+            USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
+            app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
+        else:
+            flash('Wrong Username / Password')
     return home()
 
 @app.route('/register', methods=['GET', 'POST'])
