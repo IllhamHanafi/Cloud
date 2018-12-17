@@ -34,7 +34,7 @@ def home():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
-        return render_template('home.html')
+        return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,7 +78,7 @@ def upload():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
-        return render_template('upload.html', filelist=make_tree(USER_UPLOAD_FOLDER))
+        return render_template('upload.html')
 
 @app.route("/uploader", methods=['GET', 'POST'])
 def uploader():
