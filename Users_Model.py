@@ -28,7 +28,13 @@ class Users_Model(object):
 		return self.db.dgetall('userdb')
 	def get(self,id):
 		return self.db.dget('userdb',id)
-	def find(self,username='', password=''):
+	def find(self, username=''):
+		for x in self.list():
+			data = self.get(x)
+			if (data['username'] == username):
+				return data
+		return None
+	def login (self,username='', password=''):
 		for x in self.list():
 			data = self.get(x)
 			if (data['username']==username):
@@ -53,6 +59,11 @@ class Users_Model(object):
 
 if __name__ == '__main__':
 	users = Users_Model()
-	#users.add('admin', 'admin')
+	users.empty()
+#	users.add('azka','yasin')
+#	users.add('via', 'valen')
+#	users.add('adam','alfian')
+#	users.add('nella','kharisma')
+#	users.add('admin', 'admin')
 	#print users.find('slamet')
 

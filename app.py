@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
 from werkzeug.utils import secure_filename
+from Auth_Model import *
 from Users_Model import *
 import os
 
@@ -10,6 +11,15 @@ UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
+a_model = Auth_Model()
+activeToken = ''
+
+def authenticate():
+    flag_authorized = a_model.cek_token(activeToken)
+    if (flag_authorized is None):
+        return False
+    else:
+        return True
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -31,7 +41,7 @@ def make_tree(path):
 
 @app.route("/")
 def home():
-    if not session.get('logged_in'):
+    if not authenticate():
         return redirect('/login')
     else:
         return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
@@ -39,11 +49,12 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global USER_UPLOAD_FOLDER
+    global activeToken
     if request.method == 'POST':
-        if users_list.find(request.form['username'], request.form['password']):
-            session['logged_in'] = True
+        if users_list.login(request.form['username'], request.form['password']):
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
+            activeToken = a_model.get_token(request.form['username'], users=users_list)
             return redirect('/')
         else:
             flash('Wrong Username / Password')
@@ -55,7 +66,7 @@ def register():
     if request.method == 'POST':
         if users_list.add(request.form['username'], request.form['password']):
             flash('Create Account Success !')
-            session['logged_in'] = True
+#            session['logged_in'] = True
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             if not os.path.exists(USER_UPLOAD_FOLDER):
                 os.makedirs(USER_UPLOAD_FOLDER)
@@ -70,13 +81,14 @@ def register():
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
-    session['logged_in'] = False
+    global activeToken
+    activeToken = ''
     return redirect('/')
 
 @app.route("/upload")
 def upload():
-    if not session.get('logged_in'):
-        return redirect('/')
+    if not authenticate():
+        return redirect('/login')
     else:
         return render_template('upload.html')
 

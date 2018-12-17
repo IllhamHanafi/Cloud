@@ -18,8 +18,10 @@ class Auth_Model(object):
 	def __init__(self):
 		self.username = ''
 		self.password = ''
-	def get_token(self, username, users):
+	def login(self,username,password):
 		self.username = username
+		self.password = password
+		users = Users_Model()
 		user_detail = users.find(self.username)
 		token_expiration = datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
 		user_detail['exp']=token_expiration
@@ -38,9 +40,9 @@ class Auth_Model(object):
 
 if __name__ == '__main__':
 	auth = Auth_Model()
-#	token = auth.login('azka','yasin')
-#	print token
+	token = auth.login('slamet','kaoskakimerah')
+	print token
 	#time.sleep(2)
-#	cek = auth.cek_token(token)
-#	print cek
+	cek = auth.cek_token(token)
+	print cek
 #cek will be None if token is expired
