@@ -58,9 +58,8 @@ def register():
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             if not os.path.exists(USER_UPLOAD_FOLDER):
                 os.makedirs(USER_UPLOAD_FOLDER)
-            print USER_UPLOAD_FOLDER
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
-            return render_template('home.html')
+            return home()
         else:
             flash('Username Already Exist !')
             return render_template('register.html')
