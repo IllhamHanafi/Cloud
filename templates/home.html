@@ -1,17 +1,50 @@
 {% extends 'layout.html'  %}
 
 {% block header %}
-<h2>Dashboard</h2>
+  <meta charset="utf-8" />
+  <title>Index of {{ curdir.path }}</title>
 {% endblock %}
 
 {% block content %}
-    <h2>File in {{ filelist.name }}</h2>
-        <ul>
-{%- for item in filelist.children recursive %}
-    <li>{{ item.name }}
-    {%- if item.children -%}
-        <ul>{{ loop(item.children) }}</ul>
-    {%- endif %}</li>
-{%- endfor %}
-</ul>
+{% from "templates/macro.html" import entry, thead, breadcrumb
+with context %}
+
+{#    <h2>File in {{ filelist.name }}</h2>#}
+{#        <ul>#}
+{#{%- for item in filelist.children recursive %}#}
+{#    <li>{{ item.name }}#}
+{#    {%- if item.children -%}#}
+{#        <ul>{{ loop(item.children) }}</ul>#}
+{#    {%- endif %}</li>#}
+{#{%- endfor %}#}
+{#</ul>#}
+
+<body>
+  {% block table %}
+    <table>
+      <thead>
+        {{ thead() }}
+        {% if not curdir.is_root() %}
+          <tr>
+            <td class="breadcrumb" colspan="4">
+              <h1>{{ breadcrumb(curdir) }}</h1>
+            </td>
+          </tr>
+        {% endif %}
+      </thead>
+      <tbody>
+        {% for ent in entries %}
+          {{ entry(ent) }}
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endblock %}
+  {% block footer %}
+    {% set env = request.environ %}
+    <address>{{ env.SERVER_SOFTWARE }}
+      Server at {{ env.HTTP_HOST }}
+      Port {{ env.SERVER_PORT }}</address>
+  {% endblock %}
+</body>
+
 {% endblock %}

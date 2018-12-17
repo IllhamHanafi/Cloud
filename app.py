@@ -3,6 +3,10 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from werkzeug.utils import secure_filename
 from Users_Model import *
 import os
+from flask_autoindex import AutoIndex
+# import icons
+# import entry
+# import indexing
 
 app = Flask(__name__)
 users_list = Users_Model()
@@ -46,7 +50,7 @@ def login():
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
         else:
             flash('Wrong Username / Password')
-    return home()
+    return redirect('/')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -102,6 +106,9 @@ def uploader():
             return 'file uploaded successfully'
     else:
         return 'failed to upload file'
+
+
+AutoIndex(app)
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
