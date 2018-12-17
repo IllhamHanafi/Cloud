@@ -32,7 +32,7 @@ def make_tree(path):
 @app.route("/")
 def home():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return redirect('/login')
     else:
         return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
 
@@ -44,9 +44,10 @@ def login():
             session['logged_in'] = True
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
+            return redirect('/')
         else:
             flash('Wrong Username / Password')
-    return home()
+    return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -59,7 +60,7 @@ def register():
             if not os.path.exists(USER_UPLOAD_FOLDER):
                 os.makedirs(USER_UPLOAD_FOLDER)
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
-            return home()
+            return redirect('/')
         else:
             flash('Username Already Exist !')
             return render_template('register.html')
@@ -70,12 +71,12 @@ def register():
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
     session['logged_in'] = False
-    return home()
+    return redirect('/')
 
 @app.route("/upload")
 def upload():
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return redirect('/')
     else:
         return render_template('upload.html')
 
