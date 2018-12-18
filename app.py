@@ -181,10 +181,17 @@ def download(file):
     path_to_download = USER_UPLOAD_FOLDER+'/'+file
     return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
+@app.route('/<directory>')
+def opendir(directory):
+    return render_template('home.html', filelist=list_list(USER_UPLOAD_FOLDER+'/'+directory))
+
 @app.route('/open/<file>')
 def open(file):
     path_to_download = USER_UPLOAD_FOLDER+'/'+file
-    return send_file(path_to_download, attachment_filename=file, as_attachment=False)
+    if(os.path.isdir(path_to_download)):
+        return redirect('/'+file)
+    else:
+        return send_file(path_to_download, attachment_filename=file, as_attachment=False)
 
 @app.route('/makedir', methods=['POST'])
 def make_dir():
