@@ -79,7 +79,7 @@ def register():
     global USER_UPLOAD_FOLDER
     if request.method == 'POST':
         if users_list.add(request.form['username'], request.form['password']):
-            flash('Create Account Success !')
+            flash('Create Account Success !', 'success')
 #            session['logged_in'] = True
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             if not os.path.exists(USER_UPLOAD_FOLDER):
@@ -87,7 +87,7 @@ def register():
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
             return redirect('/')
         else:
-            flash('Username Already Exist !')
+            flash('Username Already Exist !', 'error')
             return render_template('register.html')
     else:
         return render_template('register.html')
