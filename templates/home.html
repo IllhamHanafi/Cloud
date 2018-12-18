@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
     <h2>File in {{ filelist.name }}</h2>
     <ul>
         {%- for item in filelist.children recursive %}
@@ -26,5 +27,43 @@
             {% endif %}
             {% endwith %}
     </script>
+=======
+    <!-- <h2>File in {{ filelist.name }}</h2>
+        <ul>
+{%- for item in filelist.children recursive %}
+    <li>{{ item.name }}
+    {%- if item.children -%}
+        <ul>{{ loop(item.children) }} </ul>
+    {%- endif %}{{item.children}} <a href="/download/{{ item.children }}">download</a>
+    </li>
+{%- endfor %}
+</ul> -->
+<div class="row">
+    <div class="col-6">
+        <table>
+            {% for a in filelist.folder %}
+                <tr>
+                    <td class="col-lg-3"><a href="/open/{{a}}" target="_blank" > <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
+                    <!-- <td class="col-lg-3" ><a href="/download/{{a}}"><i class="fa fa-download"></i></a></td> -->
+                </tr>
+            {% endfor %}
+            {% for a in filelist.files %}
+                <tr>
+                    <td class="col-lg-3" > <a href="/open/{{a}}" target="_blank" >{{a}}</a></td>
+                    <td class="col-lg-3" ><a href="/download/{{a}}"><i class="fa fa-download"></i></a></td>
+                </tr>
+            {% endfor %}
+    
+        </table>
+    </div>
+</div>
+<div class="row">
+    <form class="" action="/makedir" method="post">
+        <input class="form-control" type="text" name="folder" >
+        <!-- <input type="button" value=""> -->
+        <button class="btn btn-primary" type="submit">create</button>
+    </form>
+</div>
+>>>>>>> master
 
 {% endblock %}

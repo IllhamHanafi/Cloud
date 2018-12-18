@@ -12,7 +12,7 @@ app = Flask(__name__)
 users_list = Users_Model()
 # UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 # USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
-UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kalian
+UPLOAD_FOLDER = os.path.dirname(os.getcwd())+'/user' #ganti ini pake directory kalian
 USER_UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kalian
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
@@ -20,11 +20,20 @@ app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
 index = AutoIndex(app, USER_UPLOAD_FOLDER, add_url_rules=False)
 
 a_model = Auth_Model()
-activeToken = ''
+activeToken = '' #globalVariableforToken
 Bootstrap(app)
 
-def authenticate():
-    flag_authorized = a_model.cek_token(activeToken)
+def printToken():
+    if activeToken == '':
+        return None
+    elif not authenticate(activeToken):
+        return None
+    else:
+        return activeToken
+
+
+def authenticate(checkedToken):
+    flag_authorized = a_model.cek_token(checkedToken)
     if (flag_authorized is None):
         return False
     else:
@@ -48,12 +57,54 @@ def make_tree(path):
                 tree['children'].append(dict(name=fn))
     return tree
 
+def list_diretory(path):
+    list_of_user = {
+        'files':[],
+        'folder':[]
+    }
+    files = os.listdir(path)
+    return files
+
+def list_list(path):
+    list_of_user = {
+        'files':[],
+        'folder':[]
+    }
+    folders=[]
+    file=[]
+    semua=[]
+    files = os.listdir(path)
+    for a in files:
+        semua.append(a)
+    
+    for i in files:
+        if os.path.isdir(path+'/'+i):
+            list_of_user['folder'].append(i)
+            # folders.append(i)
+        elif os.path.isfile(path+'/'+i):
+            list_of_user['files'].append(i)
+            # file.append(i)
+    
+    return list_of_user
+
 @app.route("/")
 def home():
-    if not authenticate():
+    if not authenticate(activeToken):
         return redirect('/login')
     else:
-        return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
+        # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
+        return render_template('home.html', filelist=list_list(USER_UPLOAD_FOLDER))
+
+@app.route("/token")
+def mytoken():
+    return printToken()
+
+@app.route("/cektoken/<token>")
+def mytoktoken(token):
+    if authenticate(token):
+        return 'token benar'
+    else:
+        return 'token salah'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,7 +148,7 @@ def logout():
 
 @app.route("/upload")
 def upload():
-    if not authenticate():
+    if not authenticate(activeToken):
         return redirect('/login')
     else:
         return render_template('upload.html')
@@ -125,18 +176,43 @@ def uploader():
     else:
         return 'failed to upload file'
 
-@app.route('/download')
-def download():
-    
-    return send_file('/home/didin/Project/Cloud/FP/rambo/example.png', attachment_filename='komber.png', as_attachment=True)
+@app.route('/download/<file>')
+def download(file):
+    path_to_download = USER_UPLOAD_FOLDER+'/'+file
+    return send_file(path_to_download, attachment_filename=file, as_attachment=True)
+
+@app.route('/open/<file>')
+def open(file):
+    path_to_download = USER_UPLOAD_FOLDER+'/'+file
+    return send_file(path_to_download, attachment_filename=file, as_attachment=False)
+
+@app.route('/makedir', methods=['POST'])
+def make_dir():
+    directory = request.form.get('folder')
+    folder = USER_UPLOAD_FOLDER+'/'+directory
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+        return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/testlist')
+def testlist():
+    isinya = list_list(USER_UPLOAD_FOLDER)
+    list_of_user = jsonify(isinya)
+    return list_of_user
+
+
 
 
 @app.route('/index')
-def autoindex(path='.'):
-    if not authenticate():
+def autoindex():
+    if not authenticate(activeToken):
         return redirect('/login')
     else:
-        return index.render_autoindex(path)
+        hasil = list_diretory(USER_UPLOAD_FOLDER)
+        hasil = jsonify(hasil)
+        return hasil
 
 @app.route('/tree')
 def cobatree():
