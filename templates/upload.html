@@ -1,35 +1,36 @@
 {% extends 'layout.html' %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 {% block header %}
-{#    <form class="form-horizontal">#}
-{#            <div class="form-group">#}
-{#                <label class="control-label col-sm-2" for="">File ()</label>#}
-{#                    <input type="file" name="file">#}
-{#            </div>#}
-{#            <div class="form-group">#}
-{#                    <button type="submit" class="btn btn-primary">Submit</button>#}
-{#            </div>#}
-{#        </form>#}
+{# <form class="form-horizontal">#}
+    {# <div class="form-group">#}
+        {# <label class="control-label col-sm-2" for="">File ()</label>#}
+        {# <input type="file" name="file">#}
+        {# </div>#}
+    {# <div class="form-group">#}
+        {# <button type="submit" class="btn btn-primary">Submit</button>#}
+        {# </div>#}
+    {# </form>#}
 
 
 <h3>Upload File</h3>
-    <!-- <form action="/uploader" method="POST" enctype = "multipart/form-data">
+<!-- <form action="/uploader" method="POST" enctype = "multipart/form-data">
         Select a file: <input type="file" name="file"><br><br>
         <input type="submit">
     </form> -->
-    <form class="form-horizontal" action="/uploader" method="POST" enctype = "multipart/form-data">
-        <label class="control-label col-sm-2" for="">File (.jpg, .png)</label>
-        <div class="col-sm-12">
-            <input type="file" class="form-control" name="file">
-        </div>
+<form class="form-horizontal" action="/uploader" method="POST" enctype="multipart/form-data">
+    <label class="control-label col-sm-2" for="">File (.jpg, .png)</label>
+    <div class="col-sm-12">
+        <input type="file" class="form-control" name="file">
+    </div>
 
-            <!-- <div class="form-group">
+    <!-- <div class="form-group">
                 <label class="control-label col-sm-2" for="">File (.jpg, .png)</label>
                 <div class="col-sm-10">
                     <input type="file" class="form-control" name="file">
                 </div>
             </div> -->
-            <!-- <div class="form-group">
+    <!-- <div class="form-group">
                 <label class="control-label col-sm-2" for="">Anda:</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="" placeholder="Kamu">
@@ -41,12 +42,21 @@
                     <input type="password" class="form-control" id="" placeholder="Tupai Jantan">
                 </div>
             </div> -->
-            <div class="form-group"> 
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-            </div>
-    </form>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </div>
+    <script>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        swal("Error", "{{ message }}", "error");
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </script>
+</form>
 {% endblock %}
 
 {% block content %}
