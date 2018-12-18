@@ -48,12 +48,17 @@ def make_tree(path):
                 tree['children'].append(dict(name=fn))
     return tree
 
+def list_diretory(path):
+    files = os.listdir(path)
+    return files
+
 @app.route("/")
 def home():
     if not authenticate():
         return redirect('/login')
     else:
-        return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
+        # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
+        return render_template('home.html', filelist=list_diretory(USER_UPLOAD_FOLDER))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -124,18 +129,20 @@ def uploader():
     else:
         return 'failed to upload file'
 
-@app.route('/download')
-def download():
-    
-    return send_file('/home/didin/Project/Cloud/FP/rambo/example.png', attachment_filename='komber.png', as_attachment=True)
+@app.route('/download/<file>')
+def download(file):
+    path_to_download = USER_UPLOAD_FOLDER+'/'+file
+    return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
 
 @app.route('/index')
-def autoindex(path='.'):
+def autoindex():
     if not authenticate():
         return redirect('/login')
     else:
-        return index.render_autoindex(path)
+        hasil = list_diretory(USER_UPLOAD_FOLDER)
+        hasil = jsonify(hasil)
+        return hasil
 
 @app.route('/tree')
 def cobatree():

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h2>File in {{ filelist.name }}</h2>
+    <!-- <h2>File in {{ filelist.name }}</h2>
         <ul>
 {%- for item in filelist.children recursive %}
     <li>{{ item.name }}
@@ -14,5 +14,15 @@
     {%- endif %}{{item.children}} <a href="/download/{{ item.children }}">download</a>
     </li>
 {%- endfor %}
-</ul>
+</ul> -->
+    <table>
+        {% for a in filelist%}
+            <tr>
+                <td>{{a}}</td>
+                <td><a href="/download/{{a}}">download</a></td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
 {% endblock %}
