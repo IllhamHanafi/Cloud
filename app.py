@@ -115,9 +115,10 @@ def login():
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
             activeToken = a_model.get_token(request.form['username'], users=users_list)
+            flash('OK', 'success')
             return redirect('/')
         else:
-            flash('Wrong Username / Password')
+            flash('Wrong Username / Password', 'error')
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
