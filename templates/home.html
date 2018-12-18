@@ -10,8 +10,9 @@
 {%- for item in filelist.children recursive %}
     <li>{{ item.name }}
     {%- if item.children -%}
-        <ul>{{ loop(item.children) }}</ul>
-    {%- endif %}</li>
+        <ul>{{ loop(item.children) }} </ul>
+    {%- endif %}{{item.children}} <a href="/download/{{ item.children }}">download</a>
+    </li>
 {%- endfor %}
 </ul>
 {% endblock %}

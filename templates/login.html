@@ -1,11 +1,7 @@
 <link rel="stylesheet" href="/static/style.css">
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% import "bootstrap/utils.html" as utils %}
 {% block body %}
-{% if session['logged_in'] %}
-
-You're logged in already!
-
-{% else %}
 
 <form action="/login" method="POST">
     <div class="login">
@@ -25,5 +21,14 @@ You're logged in already!
             </div>
         </div>
     </div>
-</form>{% endif %}
+    <script>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        swal("Error", "{{ message }}", "error");
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </script>
+</form>
 {% endblock %}
