@@ -1,16 +1,24 @@
 from flask import Flask
-from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
+from flask import Flask, flash, redirect, render_template, request, session, abort, url_for, jsonify, send_file
 from werkzeug.utils import secure_filename
 from Auth_Model import *
 from Users_Model import *
 import os
 
+from flask_autoindex import AutoIndex 
+
+
 app = Flask(__name__)
 users_list = Users_Model()
-UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
-USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
+# UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
+# USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
+UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kalian
+USER_UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kalian
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
+
+index = AutoIndex(app, USER_UPLOAD_FOLDER, add_url_rules=False)
+
 a_model = Auth_Model()
 activeToken = ''
 
@@ -114,6 +122,26 @@ def uploader():
             return 'file uploaded successfully'
     else:
         return 'failed to upload file'
+
+@app.route('/download')
+def download():
+    
+    return send_file('/home/didin/Project/Cloud/FP/rambo/example.png', attachment_filename='komber.png', as_attachment=True)
+
+
+@app.route('/index')
+def autoindex(path='.'):
+    if not authenticate():
+        return redirect('/login')
+    else:
+        return index.render_autoindex(path)
+
+@app.route('/tree')
+def cobatree():
+    rambo = USER_UPLOAD_FOLDER
+    hasil = make_tree(rambo)
+    hasil = jsonify(hasil)
+    return hasil
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
