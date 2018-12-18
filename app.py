@@ -1,5 +1,6 @@
 from flask import Flask
-from flask import Flask, flash, redirect, render_template, request, session, abort, url_for
+from flask import flash, redirect, render_template, request, session, abort, url_for
+from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
 from Auth_Model import *
 from Users_Model import *
@@ -13,6 +14,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
 a_model = Auth_Model()
 activeToken = ''
+Bootstrap(app)
 
 def authenticate():
     flag_authorized = a_model.cek_token(activeToken)
