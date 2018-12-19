@@ -10,8 +10,6 @@ import os
 
 app = Flask(__name__)
 users_list = Users_Model()
-# UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
-# USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 UPLOAD_FOLDER = os.path.dirname(os.getcwd())+'/user' #ganti ini pake directory kalian
 USER_UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kalian
 CURRENT_WORKING_DIRECTORY = ''
@@ -132,6 +130,13 @@ def home_list():
     # a = jsonify(a)
     # return a
 
+@app.route('/uproot', methods=['GET'])
+def uproot():
+    current = request.args.get('current_dir')
+    path_current = pop_dir(current)
+    print '==========================================================~~~~==============='
+    return render_template('home.html', filelist=list_list(path_current), current=path_current)
+
 @app.route("/token")
 def mytoken():
     return printToken()
@@ -194,47 +199,45 @@ def upload():
     else:
         return render_template('upload.html')
 
-@app.route("/uploader", methods=['GET', 'POST'])
+@app.route("/uploader", methods=['POST'])
 def uploader():
+    current = request.form.get('current_dir')
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(request.url)
+            return render_template('home.html', filelist=list_list(current), current=current)
         file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
-            return redirect(request.url)
+            return render_template('home.html', filelist=list_list(current), current=current)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filename = filename.replace("_", " ")
-            file.save(os.path.join(CURRENT_WORKING_DIRECTORY, filename))
+            uploadedPath = current + '/' + filename
+            file.save(uploadedPath)
 #            return redirect(url_for('uploaded_file',
 #                                    filename=filename))
-            return 'file uploaded successfully'
-    else:
-        return 'failed to upload file'
+            return render_template('home.html', filelist=list_list(current), current=current)
 
-@app.route('/download/<file>')
-def download(file):
-    path_to_download = USER_UPLOAD_FOLDER+'/'+file
+    else:
+        return render_template('home.html', filelist=list_list(current), current=current)
+
+@app.route('/download')
+def download():
+    current = request.args.get('current_dir')
+    file = request.args.get('file')
+    path_to_download = current + '/' + file
     return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
-# @app.route('/<directory>')
-# def opendir(directory):
-#     global CURRENT_WORKING_DIRECTORY
-#     CURRENT_WORKING_DIRECTORY = CURRENT_WORKING_DIRECTORY + '/' + directory
-#     return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
-
-@app.route('/open/<file>')
-def open(file):
-    path_to_download = CURRENT_WORKING_DIRECTORY+'/'+file
-    if(os.path.isdir(path_to_download)):
-        return redirect('/'+file)
-    else:
-        return send_file(path_to_download, attachment_filename=file, as_attachment=False)
+@app.route('/open')
+def open():
+    current = request.args.get('current_dir')
+    file = request.args.get('file')
+    path_to_download = current + '/' + file
+    return send_file(path_to_download, attachment_filename=file, as_attachment=False)
 
 @app.route('/makedir', methods=['POST'])
 def make_dir():
@@ -244,6 +247,14 @@ def make_dir():
     if not os.path.exists(folder):
         os.makedirs(folder)
     return render_template('home.html', filelist=list_list(current), current=current)
+
+
+
+
+
+
+
+
 
 @app.route('/delete', methods=['GET'])
 def delete_file():

@@ -14,49 +14,26 @@
 
 
 <h3>Upload File</h3>
-<!-- <form action="/uploader" method="POST" enctype = "multipart/form-data">
-        Select a file: <input type="file" name="file"><br><br>
-        <input type="submit">
-    </form> -->
 <form class="form-horizontal" action="/uploader" method="POST" enctype="multipart/form-data">
     <label class="control-label col-sm-12" for="">File (.jpg, .jpeg, .png, .txt, .pdf, .mp3, .gif)</label>
     <div class="col-sm-12">
         <input type="file" class="form-control" name="file">
     </div>
-
-    <!-- <div class="form-group">
-                <label class="control-label col-sm-2" for="">File (.jpg, .png)</label>
-                <div class="col-sm-10">
-                    <input type="file" class="form-control" name="file">
-                </div>
-            </div> -->
-    <!-- <div class="form-group">
-                <label class="control-label col-sm-2" for="">Anda:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="" placeholder="Kamu">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="">Tupai:</label>
-                <div class="col-sm-10"> 
-                    <input type="password" class="form-control" id="" placeholder="Tupai Jantan">
-                </div>
-            </div> -->
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-success">Submit</button>
         </div>
     </div>
-    <script>
-        {% with messages = get_flashed_messages(with_categories=True) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            swal("{{ category }}", "{{ message }}", "{{ category }}");
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-    </script>
 </form>
+<script>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        swal("{{ category }}", "{{ message }}", "{{ category }}");
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+</script>
 {% endblock %}
 
 {% block content %}
