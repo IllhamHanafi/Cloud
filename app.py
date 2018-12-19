@@ -5,7 +5,7 @@ from Auth_Model import *
 from Users_Model import *
 import os
 
-from flask_autoindex import AutoIndex 
+# from flask_autoindex import AutoIndex 
 
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ USER_UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kali
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
 
-index = AutoIndex(app, USER_UPLOAD_FOLDER, add_url_rules=False)
+# index = AutoIndex(app, USER_UPLOAD_FOLDER, add_url_rules=False)
 
 a_model = Auth_Model()
 activeToken = ''
@@ -205,4 +205,4 @@ def cobatree():
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #max upload 16 mb
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
