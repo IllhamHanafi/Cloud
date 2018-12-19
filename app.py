@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from Auth_Model import *
 from Users_Model import *
 import os
+import shutil
 
 # from flask_autoindex import AutoIndex 
 
@@ -269,6 +270,19 @@ def delete_file():
         size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
         size = sizeof_fmt(size)
         return render_template('home.html', filelist=list_list(current), current=current, size=size)
+
+@app.route('/move', methods=['GET'])
+def move():
+    move_to = CURRENT_WORKING_DIRECTORY+'/sempre'
+    file = request.args.get('object')
+    current = request.args.get('current_dir')
+    move_to_path = move_to+'/'+file
+    source = current+'/'+file
+    shutil.move(source,move_to_path)
+
+    return redirect('/')
+    # return source+' '+move_to_path
+
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
