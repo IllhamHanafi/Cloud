@@ -8,45 +8,46 @@
 {% import "bootstrap/utils.html" as utils %}
 
 {% block header %}
-<h2>Dashboard</h2>
+
 {% endblock %}
 
 {% block content %}
 <main role="main" class="container" style="margin-top: 40px">
-
-    <form class="form-horizontal" action="/makedir" method="POST">
-        <div class="form-group">
-            
-            <div class="col-sm-16">
+    <br><br><br>
+    <div class="container-fluid bg-3 text-center">    
+        <h2>{{current}}</h2>
+        <h3>{{size}}/16.0MiB</h3>
+        <br>
+  <div class="row">
+    <div class="col-sm-6">
+      <form class="form-horizontal" action="/makedir" method="POST">
+            <!-- <div class="form-group"> -->
+                <label class="control-label col-sm-12" for="">Create Directory</label>
                 <input class="form-control" type="text" name="folder" placeholder="Create Folder" >
                 <input type="hidden" name="current_dir" value="{{current}}">
                 <button class="btn btn-primary" type="submit">create</button>
-            </div>
-        </div>
-    </form>
-    <h3>Upload File</h3>
-    <form class="form-horizontal" action="/uploader" method="POST" enctype="multipart/form-data">
-        <label class="control-label col-sm-12" for="">File (.jpg, .jpeg, .png, .txt, .pdf, .mp3, .gif)</label>
-        <div class="col-sm-12">
+            <!-- </div> -->
+        </form>
+    </div>
+    <div class="col-sm-6"> 
+        <form class="form-horizontal" action="/uploader" method="POST" enctype="multipart/form-data">
+            <label class="control-label col-sm-12" for="">File (.jpg, .jpeg, .png, .txt, .pdf, .mp3, .gif)</label>    
             <input type="file" class="form-control" name="file">
-        </div>
-        <input type="hidden" name="current_dir" value="{{current}}">
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-success">Submit</button>
-            </div>
-        </div>
-    </form>
+            <input type="hidden" name="current_dir" value="{{current}}">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+        
+  </div>
+</div>
 
         <div class="panel panel-default">
-            <h2>{{current}}</h2>
-            <h3>{{size}} / 16MiB</h3>
         <style>
             .fa-10x {
                 font-size: 40px;
             }
         </style>
-            <a href="/uproot?current_dir={{current}}" class="fa fa-arrow-left fa-10x" ></a>
+        <a href="/uproot?current_dir={{current}}" class="fa fa-arrow-left fa-10x" ></a>
         <div class="panel-heading" style="background-color: #013880;color: white;">
             <center><b>File List</b></center>
         </div>
@@ -92,14 +93,4 @@
 
 
 </main>
-
-
-<!-- <div class="row">
-    <form class="" action="/makedir" method="post">
-        <input class="form-control" type="text" name="folder" > -->
-        <!-- <input type="button" value=""> -->
-        <!-- <button class="btn btn-primary" type="submit">create</button>
-    </form>
-</div> -->
-
 {% endblock %}
