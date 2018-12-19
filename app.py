@@ -95,21 +95,39 @@ def list_list(path):
     
     return list_of_user
 
+def get_size(start_path = USER_UPLOAD_FOLDER ):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+    return total_size
+
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
 @app.route("/")
 def home():
     if not authenticate(activeToken):
         return redirect('/login')
     else:
         # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
-        return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY), current=CURRENT_WORKING_DIRECTORY)
+        size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+        size = sizeof_fmt(size)
+        return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY), current=CURRENT_WORKING_DIRECTORY, size=size)
 
 @app.route('/home', methods=['GET'])
 def home_list():
     current = request.args.get('current_dir')
     folder = request.args.get('folder')
-    
+    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+    size = sizeof_fmt(size)
     path_current=append_dir(current,folder)
-    return render_template('home.html', filelist=list_list(path_current), current=path_current)
+    return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
     # a = path_current
     # a = jsonify(a)
     # return a
