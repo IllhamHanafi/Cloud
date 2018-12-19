@@ -30,7 +30,7 @@
             <h2>{{current}}</h2>
             <h3>{{size}}</h3>
         <div class="panel-heading" style="background-color: #013880;color: white;">
-            <center><b>Folder List</b></center>
+            <center><b>File List</b></center>
         </div>
         <div class="panel-body">
             <div class="table table-responsive">
@@ -38,51 +38,23 @@
                     <thead>
                         <tr>
                         <th>Folder Name</th>
+                        <th><center>action</center></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for a in filelist.folder %}
                             <tr>
-                                <td class="col-lg-3"><a href="/home?current_dir={{current}}&folder={{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
+                                <td><a href="/home?current_dir={{current}}&folder={{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
                                 <td><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
-                                <!-- <td>
-                                    <form action="/home" method="post" id="form_folder" >
-                                        <input type="hidden" name="current_dir" id="" value="{{current}}">
-                                        <input type="hidden" name="folder" value="{{a}}" >
-                                        <a href="#" id="tombol" > <span><i class="fa fa-folder"></i></span> {{a}}</a>
-                                    </form>
-                                </td>
-                                <td>
-                                    <form action="/up"></form>
-
-                                </td> -->
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading" style="background-color: #013880;color: white;">
-                <center><b>File List</b></center>
-        </div>
-        <div class="panel-body">
-            <div class="table table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                        <th>File Name</th>
-                        <th><center>action</center></th>
-                        </tr>
-                    </thead>
-                    <tbody>
                         {% for a in filelist.files %}
                             <tr>
                                 <td><a href="/open/{{a}}" target="_blank" >{{a}}</a></td>
-                                <td><center><a href="/download/{{a}}"><i class="fa fa-download"></i></a></center></td>
-                                <td><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <td><center>
+                                    <a href="/download/{{a}}"><i class="fa fa-download"></i></a>
+                                    <a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a>
+                                    </center></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -90,6 +62,7 @@
             </div>
         </div>
     </div>
+
 
 </main>
 
