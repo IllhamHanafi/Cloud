@@ -130,13 +130,6 @@ def home_list():
     # a = jsonify(a)
     # return a
 
-@app.route('/uproot', methods=['GET'])
-def uproot():
-    current = request.args.get('current_dir')
-    path_current = pop_dir(current)
-    print '==========================================================~~~~==============='
-    return render_template('home.html', filelist=list_list(path_current), current=path_current)
-
 @app.route("/token")
 def mytoken():
     return printToken()
@@ -202,28 +195,33 @@ def upload():
 @app.route("/uploader", methods=['POST'])
 def uploader():
     current = request.form.get('current_dir')
+    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+    size = sizeof_fmt(size)
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return render_template('home.html', filelist=list_list(current), current=current)
+            return render_template('home.html', filelist=list_list(current), current=current, size=size)
         file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
-            return render_template('home.html', filelist=list_list(current), current=current)
+            return render_template('home.html', filelist=list_list(current), current=current, size=size)
+        #if
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filename = filename.replace("_", " ")
             uploadedPath = current + '/' + filename
             file.save(uploadedPath)
+            size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+            size = sizeof_fmt(size)
 #            return redirect(url_for('uploaded_file',
 #                                    filename=filename))
-            return render_template('home.html', filelist=list_list(current), current=current)
+            return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
     else:
-        return render_template('home.html', filelist=list_list(current), current=current)
+        return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
 @app.route('/download')
 def download():
@@ -241,20 +239,22 @@ def open():
 
 @app.route('/makedir', methods=['POST'])
 def make_dir():
+    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+    size = sizeof_fmt(size)
     current = request.form.get('current_dir')
     directory = request.form.get('folder')
     folder = current+'/'+directory
     if not os.path.exists(folder):
         os.makedirs(folder)
-    return render_template('home.html', filelist=list_list(current), current=current)
+    return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
-
-
-
-
-
-
-
+@app.route('/uproot', methods=['GET'])
+def uproot():
+    current = request.args.get('current_dir')
+    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+    size = sizeof_fmt(size)
+    path_current = pop_dir(current)
+    return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
 
 @app.route('/delete', methods=['GET'])
 def delete_file():
@@ -266,7 +266,9 @@ def delete_file():
             os.rmdir(path_to_delete)
         else:
             os.remove(path_to_delete)
-        return render_template('home.html', filelist=list_list(current), current=current)
+        size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+        size = sizeof_fmt(size)
+        return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
