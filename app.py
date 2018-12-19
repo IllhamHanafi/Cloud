@@ -208,6 +208,16 @@ def make_dir():
     else:
         return redirect(url_for('home'))
 
+@app.route('/delete/<file>')
+def delete_file(file):
+    path_to_delete = CURRENT_WORKING_DIRECTORY + '/' + file
+    if os.path.exists(path_to_delete):
+        if os.path.isdir(path_to_delete):
+            os.rmdir(path_to_delete)
+        else:
+            os.remove(path_to_delete)
+        return redirect(url_for('home'))
+
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #max upload 16 mb
