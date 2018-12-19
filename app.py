@@ -5,7 +5,7 @@ from Auth_Model import *
 from Users_Model import *
 import os
 
-from flask_autoindex import AutoIndex 
+# from flask_autoindex import AutoIndex 
 
 
 app = Flask(__name__)
@@ -211,4 +211,4 @@ def make_dir():
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #max upload 16 mb
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
