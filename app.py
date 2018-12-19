@@ -5,7 +5,7 @@ from Auth_Model import *
 from Users_Model import *
 import os
 
-from flask_autoindex import AutoIndex 
+# from flask_autoindex import AutoIndex 
 
 
 app = Flask(__name__)
@@ -14,10 +14,9 @@ users_list = Users_Model()
 # USER_UPLOAD_FOLDER = '/home/bujang/dummy' #ganti ini pake directory kalian
 UPLOAD_FOLDER = os.path.dirname(os.getcwd())+'/user' #ganti ini pake directory kalian
 USER_UPLOAD_FOLDER = os.path.dirname(os.getcwd()) #ganti ini pake directory kalian
+CURRENT_WORKING_DIRECTORY = ''
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp3'])
 app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
-
-index = AutoIndex(app, USER_UPLOAD_FOLDER, add_url_rules=False)
 
 a_model = Auth_Model()
 activeToken = '' #globalVariableforToken
@@ -93,7 +92,7 @@ def home():
         return redirect('/login')
     else:
         # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
-        return render_template('home.html', filelist=list_list(USER_UPLOAD_FOLDER))
+        return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
 
 @app.route("/token")
 def mytoken():
@@ -109,11 +108,13 @@ def mytoktoken(token):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global USER_UPLOAD_FOLDER
+    global CURRENT_WORKING_DIRECTORY
     global activeToken
     if request.method == 'POST':
         if users_list.login(request.form['username'], request.form['password']):
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
+            CURRENT_WORKING_DIRECTORY = USER_UPLOAD_FOLDER
             activeToken = a_model.get_token(request.form['username'], users=users_list)
             flash('OK', 'success')
             return redirect('/')
@@ -143,7 +144,9 @@ def register():
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
     global activeToken
+    global CURRENT_WORKING_DIRECTORY
     activeToken = ''
+    CURRENT_WORKING_DIRECTORY = ''
     return redirect('/')
 
 @app.route("/upload")
@@ -169,7 +172,7 @@ def uploader():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filename = filename.replace("_", " ")
-            file.save(os.path.join(app.config['USER_UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(CURRENT_WORKING_DIRECTORY, filename))
 #            return redirect(url_for('uploaded_file',
 #                                    filename=filename))
             return 'file uploaded successfully'
@@ -181,47 +184,31 @@ def download(file):
     path_to_download = USER_UPLOAD_FOLDER+'/'+file
     return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
+@app.route('/<directory>')
+def opendir(directory):
+    global CURRENT_WORKING_DIRECTORY
+    CURRENT_WORKING_DIRECTORY = CURRENT_WORKING_DIRECTORY + '/' + directory
+    return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
+
 @app.route('/open/<file>')
 def open(file):
-    path_to_download = USER_UPLOAD_FOLDER+'/'+file
-    return send_file(path_to_download, attachment_filename=file, as_attachment=False)
+    path_to_download = CURRENT_WORKING_DIRECTORY+'/'+file
+    if(os.path.isdir(path_to_download)):
+        return redirect('/'+file)
+    else:
+        return send_file(path_to_download, attachment_filename=file, as_attachment=False)
 
 @app.route('/makedir', methods=['POST'])
 def make_dir():
     directory = request.form.get('folder')
-    folder = USER_UPLOAD_FOLDER+'/'+directory
+    folder = CURRENT_WORKING_DIRECTORY+'/'+directory
     if not os.path.exists(folder):
         os.makedirs(folder)
         return redirect(url_for('home'))
     else:
         return redirect(url_for('home'))
 
-@app.route('/testlist')
-def testlist():
-    isinya = list_list(USER_UPLOAD_FOLDER)
-    list_of_user = jsonify(isinya)
-    return list_of_user
-
-
-
-
-@app.route('/index')
-def autoindex():
-    if not authenticate(activeToken):
-        return redirect('/login')
-    else:
-        hasil = list_diretory(USER_UPLOAD_FOLDER)
-        hasil = jsonify(hasil)
-        return hasil
-
-@app.route('/tree')
-def cobatree():
-    rambo = USER_UPLOAD_FOLDER
-    hasil = make_tree(rambo)
-    hasil = jsonify(hasil)
-    return hasil
-
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #max upload 16 mb
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
