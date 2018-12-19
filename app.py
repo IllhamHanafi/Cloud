@@ -220,6 +220,9 @@ def uploader():
             uploadedPath = current + '/' + filename
             file.save(uploadedPath)
             size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+            if size>(16*1024*1024):
+                os.remove(uploadedPath)
+                size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
             size = sizeof_fmt(size)
 #            return redirect(url_for('uploaded_file',
 #                                    filename=filename))
