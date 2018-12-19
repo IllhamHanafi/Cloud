@@ -22,7 +22,7 @@
 
         <div class="panel panel-default">
         <div class="panel-heading" style="background-color: #013880;color: white;">
-            <center><b>Folder List</b></center>
+            <center><b>File List</b></center>
         </div>
         <div class="panel-body">
             <div class="table table-responsive">
@@ -30,6 +30,7 @@
                     <thead>
                         <tr>
                         <th>Folder Name</th>
+                        <th><center>action</center></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,26 +40,6 @@
                                 <!-- <td class="col-lg-3" ><a href="/download/{{a}}"><i class="fa fa-download"></i></a></td> -->
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading" style="background-color: #013880;color: white;">
-                <center><b>File List</b></center>
-        </div>
-        <div class="panel-body">
-            <div class="table table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                        <th>File Name</th>
-                        <th><center>action</center></th>
-                        </tr>
-                    </thead>
-                    <tbody>
                         {% for a in filelist.files %}
                             <tr>
                                 <td><a href="/open/{{a}}" target="_blank" >{{a}}</a></td>
@@ -70,6 +51,7 @@
             </div>
         </div>
     </div>
+
 
 </main>
 
