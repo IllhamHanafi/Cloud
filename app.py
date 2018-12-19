@@ -228,15 +228,17 @@ def make_dir():
     else:
         return redirect(url_for('home'))
 
-@app.route('/delete/<file>')
-def delete_file(file):
-    path_to_delete = CURRENT_WORKING_DIRECTORY + '/' + file
+@app.route('/delete', methods=['GET'])
+def delete_file():
+    current = request.args.get('current_dir')
+    deletedObject = request.args.get('object')
+    path_to_delete = current + '/' + deletedObject
     if os.path.exists(path_to_delete):
         if os.path.isdir(path_to_delete):
             os.rmdir(path_to_delete)
         else:
             os.remove(path_to_delete)
-        return redirect(url_for('home'))
+        return render_template('home.html', filelist=list_list(current), current=current)
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)

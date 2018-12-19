@@ -42,7 +42,7 @@
                         {% for a in filelist.folder %}
                             <tr>
                                 <td class="col-lg-3"><a href="/home?current_dir={{current}}&folder={{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
-                                <td><center><a href="/delete/{{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <td><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
                                 <!-- <td>
                                     <form action="/home" method="post" id="form_folder" >
                                         <input type="hidden" name="current_dir" id="" value="{{current}}">
@@ -80,7 +80,7 @@
                             <tr>
                                 <td><a href="/open/{{a}}" target="_blank" >{{a}}</a></td>
                                 <td><center><a href="/download/{{a}}"><i class="fa fa-download"></i></a></center></td>
-                                <td><center><a href="/delete/{{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <td><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
                             </tr>
                         {% endfor %}
                     </tbody>
