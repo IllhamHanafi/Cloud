@@ -20,8 +20,20 @@
             <div class="col-sm-16">
                 <input class="form-control" type="text" name="folder" placeholder="Create Folder" >
                 <input type="hidden" name="current_dir" value="{{current}}">
-                <!-- <input type="button" value=""> -->
                 <button class="btn btn-primary" type="submit">create</button>
+            </div>
+        </div>
+    </form>
+    <h3>Upload File</h3>
+    <form class="form-horizontal" action="/uploader" method="POST" enctype="multipart/form-data">
+        <label class="control-label col-sm-12" for="">File (.jpg, .jpeg, .png, .txt, .pdf, .mp3, .gif)</label>
+        <div class="col-sm-12">
+            <input type="file" class="form-control" name="file">
+        </div>
+        <input type="hidden" name="current_dir" value="{{current}}">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-success">Submit</button>
             </div>
         </div>
     </form>
@@ -35,12 +47,6 @@
         <div class="panel-body">
             <div class="table table-responsive">
                 <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                        <th>Folder Name</th>
-                        <th><center>action</center></th>
-                        </tr>
-                    </thead>
                     <tbody>
                         {% for a in filelist.folder %}
                             <tr>
@@ -50,9 +56,9 @@
                         {% endfor %}
                         {% for a in filelist.files %}
                             <tr>
-                                <td><a href="/open/{{a}}" target="_blank" >{{a}}</a></td>
+                                <td><a href="/open?current_dir={{current}}&file={{a}}" target="_blank" >{{a}}</a></td>
                                 <td><center>
-                                    <a href="/download/{{a}}"><i class="fa fa-download"></i></a>
+                                    <a href="/download/current_dir={{current}}&file={{a}}"><i class="fa fa-download"></i></a>
                                     <a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a>
                                     </center></td>
                             </tr>

@@ -59,11 +59,11 @@ class Users_Model(object):
 
 if __name__ == '__main__':
 	users = Users_Model()
-	users.empty()
-#	users.add('azka','yasin')
-#	users.add('via', 'valen')
-#	users.add('adam','alfian')
-#	users.add('nella','kharisma')
-#	users.add('admin', 'admin')
+#	users.empty()
+	# users.add('azka','yasin')
+	# users.add('via', 'valen')
+	# users.add('adam','alfian')
+	# users.add('nella','kharisma')
+	# users.add('admin', 'admin')
 	#print users.find('slamet')
 
