@@ -47,8 +47,11 @@
                 font-size: 40px;
             }
         </style>
-            <a href="/uproot?current_dir={{current}}" class="fa fa-arrow-left fa-10x" ></a>
-        <div class="panel-heading" style="background-color: #013880;color: white;">
+            <div class="row">
+                <div class="col-sm-6"><center><a href="/" class="fa fa-arrow-left fa-10x" ></a></center></div>
+                <div class="col-sm-6"><center><a href="/uproot?current_dir={{current}}" class="fa fa-home fa-10x" ></a></center></div>
+            </div>
+            <div class="panel-heading" style="background-color: #013880;color: white;">
             <center><b>File List</b></center>
         </div>
         <div class="panel-body">
@@ -61,6 +64,7 @@
                                 <td colspan="2"><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
                                 <td>
                                     <form action="/move" method="post">
+                                    <div class="container">
                                         <div class="row">
                                             <input type="hidden" name="file" value="{{a}}">
                                             <input type="hidden" name="current_dir" value="{{current}}" >
@@ -76,6 +80,7 @@
                                             </div>
                                             <!-- <input type="submit" value="move" class="btn btn-primary"> -->
                                         </div>
+                                    </div>
                                     </form>
                                 </td>
                             </tr>
@@ -98,7 +103,8 @@
                                     </center>
                                 </td> -->
                                 <td>
-                                    <form action="/move" method="post">
+                                    <form action="/move" method="post" style="padding-left:">
+                                    <div class="container">
                                         <div class="row">
                                             <input type="hidden" name="file" value="{{a}}">
                                             <input type="hidden" name="current_dir" value="{{current}}" >
@@ -112,6 +118,7 @@
                                             </div>
                                             <!-- <input type="submit" value="move" class="btn btn-primary"> -->
                                         </div>
+                                    </div>
                                     </form>
                                 </td>
                             </tr>

@@ -279,6 +279,8 @@ def uproot():
         size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
         size = sizeof_fmt(size)
         path_current = pop_dir(current)
+        if (CURRENT_WORKING_DIRECTORY > path_current):
+            path_current = CURRENT_WORKING_DIRECTORY
         return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
 
 @app.route('/delete', methods=['GET'])
