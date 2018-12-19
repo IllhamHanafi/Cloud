@@ -126,6 +126,8 @@ def home_list():
     size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
     size = sizeof_fmt(size)
     path_current=append_dir(current,folder)
+    if(CURRENT_WORKING_DIRECTORY > path_current):
+        path_current = CURRENT_WORKING_DIRECTORY
     return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
     # a = path_current
     # a = jsonify(a)
