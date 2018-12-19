@@ -101,12 +101,18 @@ def home():
         return redirect('/login')
     else:
         # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
-        return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
+        return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY), current=CURRENT_WORKING_DIRECTORY)
 
-@app.route('/home')
+@app.route('/home', methods=['GET'])
 def home_list():
-
+    current = request.args.get('current_dir')
+    folder = request.args.get('folder')
+    
+    path_current=append_dir(current,folder)
     return render_template('home.html', filelist=list_list(path_current), current=path_current)
+    # a = path_current
+    # a = jsonify(a)
+    # return a
 
 @app.route("/token")
 def mytoken():
@@ -198,11 +204,11 @@ def download(file):
     path_to_download = USER_UPLOAD_FOLDER+'/'+file
     return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
-@app.route('/<directory>')
-def opendir(directory):
-    global CURRENT_WORKING_DIRECTORY
-    CURRENT_WORKING_DIRECTORY = CURRENT_WORKING_DIRECTORY + '/' + directory
-    return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
+# @app.route('/<directory>')
+# def opendir(directory):
+#     global CURRENT_WORKING_DIRECTORY
+#     CURRENT_WORKING_DIRECTORY = CURRENT_WORKING_DIRECTORY + '/' + directory
+#     return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
 
 @app.route('/open/<file>')
 def open(file):

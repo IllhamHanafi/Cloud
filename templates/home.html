@@ -1,5 +1,10 @@
 {% extends 'layout.html'  %}
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    document.getElementById("tombol").onclick=function(){
+        document.getElementById('form_folder').submit();
+    }
+</script>
 {% import "bootstrap/utils.html" as utils %}
 
 {% block header %}
@@ -21,6 +26,7 @@
     </form>
 
         <div class="panel panel-default">
+            <h2>{{current}}</h2>
         <div class="panel-heading" style="background-color: #013880;color: white;">
             <center><b>Folder List</b></center>
         </div>
@@ -35,9 +41,19 @@
                     <tbody>
                         {% for a in filelist.folder %}
                             <tr>
-                                <td class="col-lg-3"><a href="/open/{{currentDirectory}}{{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
-                                <!-- <td class="col-lg-3" ><a href="/download/{{a}}"><i class="fa fa-download"></i></a></td> -->
+                                <td class="col-lg-3"><a href="/home?current_dir={{current}}&folder={{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
                                 <td><center><a href="/delete/{{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <!-- <td>
+                                    <form action="/home" method="post" id="form_folder" >
+                                        <input type="hidden" name="current_dir" id="" value="{{current}}">
+                                        <input type="hidden" name="folder" value="{{a}}" >
+                                        <a href="#" id="tombol" > <span><i class="fa fa-folder"></i></span> {{a}}</a>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="/up"></form>
+
+                                </td> -->
                             </tr>
                         {% endfor %}
                     </tbody>
