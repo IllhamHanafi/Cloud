@@ -130,6 +130,13 @@ def home_list():
     # a = jsonify(a)
     # return a
 
+@app.route('/uproot', methods=['GET'])
+def uproot():
+    current = request.args.get('current_dir')
+    path_current = pop_dir(current)
+    print '==========================================================~~~~==============='
+    return render_template('home.html', filelist=list_list(path_current), current=path_current)
+
 @app.route("/token")
 def mytoken():
     return printToken()
@@ -225,12 +232,6 @@ def download():
     path_to_download = current + '/' + file
     return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
-# @app.route('/<directory>')
-# def opendir(directory):
-#     global CURRENT_WORKING_DIRECTORY
-#     CURRENT_WORKING_DIRECTORY = CURRENT_WORKING_DIRECTORY + '/' + directory
-#     return render_template('home.html', filelist=list_list(CURRENT_WORKING_DIRECTORY))
-
 @app.route('/open')
 def open():
     current = request.args.get('current_dir')
@@ -246,6 +247,14 @@ def make_dir():
     if not os.path.exists(folder):
         os.makedirs(folder)
     return render_template('home.html', filelist=list_list(current), current=current)
+
+
+
+
+
+
+
+
 
 @app.route('/delete', methods=['GET'])
 def delete_file():
