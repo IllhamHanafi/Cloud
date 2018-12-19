@@ -121,17 +121,17 @@ def home():
 
 @app.route('/home', methods=['GET'])
 def home_list():
-    current = request.args.get('current_dir')
-    folder = request.args.get('folder')
-    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-    size = sizeof_fmt(size)
-    path_current=append_dir(current,folder)
-    if(CURRENT_WORKING_DIRECTORY > path_current):
-        path_current = CURRENT_WORKING_DIRECTORY
-    return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
-    # a = path_current
-    # a = jsonify(a)
-    # return a
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        current = request.args.get('current_dir')
+        folder = request.args.get('folder')
+        size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+        size = sizeof_fmt(size)
+        path_current=append_dir(current,folder)
+        if(CURRENT_WORKING_DIRECTORY > path_current):
+            path_current = CURRENT_WORKING_DIRECTORY
+        return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
 
 @app.route("/token")
 def mytoken():
@@ -197,105 +197,126 @@ def upload():
 
 @app.route("/uploader", methods=['POST'])
 def uploader():
-    current = request.form.get('current_dir')
-    rawSize = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-    size = sizeof_fmt(rawSize)
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return render_template('home.html', filelist=list_list(current), current=current, size=size)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return render_template('home.html', filelist=list_list(current), current=current, size=size)
-        # blob = file.read()
-        # fileSize = len(blob)
-        # if ((fileSize+rawSize) > (16*1024*1024)):
-        #     #kasih flash
-        #     return render_template('home.html', filelist=list_list(current), current=current, size=size)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filename = filename.replace("_", " ")
-            uploadedPath = current + '/' + filename
-            file.save(uploadedPath)
-            size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-            if size>(16*1024*1024):
-                os.remove(uploadedPath)
-                size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-            size = sizeof_fmt(size)
-#            return redirect(url_for('uploaded_file',
-#                                    filename=filename))
-            return render_template('home.html', filelist=list_list(current), current=current, size=size)
-
+    if not authenticate(activeToken):
+        return redirect('/login')
     else:
-        return render_template('home.html', filelist=list_list(current), current=current, size=size)
+        current = request.form.get('current_dir')
+        rawSize = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+        size = sizeof_fmt(rawSize)
+        if request.method == 'POST':
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                flash('No file part')
+                return render_template('home.html', filelist=list_list(current), current=current, size=size)
+            file = request.files['file']
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                flash('No selected file')
+                return render_template('home.html', filelist=list_list(current), current=current, size=size)
+            # blob = file.read()
+            # fileSize = len(blob)
+            # if ((fileSize+rawSize) > (16*1024*1024)):
+            #     #kasih flash
+            #     return render_template('home.html', filelist=list_list(current), current=current, size=size)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = filename.replace("_", " ")
+                uploadedPath = current + '/' + filename
+                file.save(uploadedPath)
+                size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+                if size>(16*1024*1024):
+                    os.remove(uploadedPath)
+                    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+                size = sizeof_fmt(size)
+    #            return redirect(url_for('uploaded_file',
+    #                                    filename=filename))
+                return render_template('home.html', filelist=list_list(current), current=current, size=size)
+
+        else:
+            return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
 @app.route('/download')
 def download():
-    current = request.args.get('current_dir')
-    file = request.args.get('file')
-    path_to_download = current + '/' + file
-    return send_file(path_to_download, attachment_filename=file, as_attachment=True)
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        current = request.args.get('current_dir')
+        file = request.args.get('file')
+        path_to_download = current + '/' + file
+        return send_file(path_to_download, attachment_filename=file, as_attachment=True)
 
 @app.route('/open')
 def open():
-    current = request.args.get('current_dir')
-    file = request.args.get('file')
-    path_to_download = current + '/' + file
-    return send_file(path_to_download, attachment_filename=file, as_attachment=False)
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        current = request.args.get('current_dir')
+        file = request.args.get('file')
+        path_to_download = current + '/' + file
+        return send_file(path_to_download, attachment_filename=file, as_attachment=False)
 
 @app.route('/makedir', methods=['POST'])
 def make_dir():
-    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-    size = sizeof_fmt(size)
-    current = request.form.get('current_dir')
-    directory = request.form.get('folder')
-    folder = current+'/'+directory
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    return render_template('home.html', filelist=list_list(current), current=current, size=size)
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+        size = sizeof_fmt(size)
+        current = request.form.get('current_dir')
+        directory = request.form.get('folder')
+        folder = current+'/'+directory
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
 @app.route('/uproot', methods=['GET'])
 def uproot():
-    current = request.args.get('current_dir')
-    size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-    size = sizeof_fmt(size)
-    path_current = pop_dir(current)
-    return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        current = request.args.get('current_dir')
+        size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+        size = sizeof_fmt(size)
+        path_current = pop_dir(current)
+        return render_template('home.html', filelist=list_list(path_current), current=path_current, size=size)
 
 @app.route('/delete', methods=['GET'])
 def delete_file():
-    current = request.args.get('current_dir')
-    deletedObject = request.args.get('object')
-    path_to_delete = current + '/' + deletedObject
-    if os.path.exists(path_to_delete):
-        if os.path.isdir(path_to_delete):
-            os.rmdir(path_to_delete)
-        else:
-            os.remove(path_to_delete)
-        size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
-        size = sizeof_fmt(size)
-        return render_template('home.html', filelist=list_list(current), current=current, size=size)
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        current = request.args.get('current_dir')
+        deletedObject = request.args.get('object')
+        path_to_delete = current + '/' + deletedObject
+        if os.path.exists(path_to_delete):
+            if os.path.isdir(path_to_delete):
+                os.rmdir(path_to_delete)
+            else:
+                os.remove(path_to_delete)
+            size = get_size(start_path=CURRENT_WORKING_DIRECTORY)
+            size = sizeof_fmt(size)
+            return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
 @app.route('/move', methods=['POST'])
 def move():
-    # move_to = CURRENT_WORKING_DIRECTORY+'/sempre'
-    file = request.form.get('file')
-    current = request.form.get('current_dir')
-    destination = request.form.get('destination')
-    source = current+'/'+file
-    dest = destination+'/'+file
-    # move_to_path = move_to+'/'+file
-    # source = current+'/'+file
-    shutil.move(source,dest)
-    # hasil = request.form
-    # hasil = jsonify(hasil)
-    return redirect('/')
-    # return 'nama file '+file+' current : '+current+' dest : '+destination
-    # return hasil
+    if not authenticate(activeToken):
+        return redirect('/login')
+    else:
+        # move_to = CURRENT_WORKING_DIRECTORY+'/sempre'
+        file = request.form.get('file')
+        current = request.form.get('current_dir')
+        destination = request.form.get('destination')
+        source = current+'/'+file
+        dest = destination+'/'+file
+        # move_to_path = move_to+'/'+file
+        # source = current+'/'+file
+        shutil.move(source,dest)
+        # hasil = request.form
+        # hasil = jsonify(hasil)
+        return redirect('/')
+        # return 'nama file '+file+' current : '+current+' dest : '+destination
+        # return hasil
 
 
 if __name__ == "__main__":
