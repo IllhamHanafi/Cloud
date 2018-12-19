@@ -57,13 +57,22 @@ def make_tree(path):
                 tree['children'].append(dict(name=fn))
     return tree
 
-def list_diretory(path):
-    list_of_user = {
-        'files':[],
-        'folder':[]
-    }
-    files = os.listdir(path)
-    return files
+def append_dir(current,path):
+    result = current+'/'+path
+    
+    return result
+    
+def pop_dir(current):
+    pisah = current.split('/')
+    pisah.pop()
+    pisah = iter(pisah)
+    next(pisah)
+    hasil=''
+    for i in pisah:
+        hasil = hasil+'/'+i
+    
+    return hasil
+
 
 def list_list(path):
     list_of_user = {
@@ -94,6 +103,11 @@ def home():
     else:
         # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
         return render_template('home.html', filelist=list_list(USER_UPLOAD_FOLDER))
+
+@app.route('/home')
+def home_list():
+
+    return render_template('home.html', filelist=list_list(path_current), current=path_current)
 
 @app.route("/token")
 def mytoken():
