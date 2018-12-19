@@ -73,13 +73,28 @@
                                     <a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a>
                                     </center>
                                 </td>
-                                <td>
-
+                                <!-- <td>
                                     <center>
                                     <a href="/move?current_dir={{current}}&object={{a}}"><i class="fa fa-location-arrow"></i></i></a>
                                     </center>
+                                </td> -->
+                                <td>
+                                    <form action="/move" method="post">
+                                        <div class="row">
+                                            <input type="hidden" name="file" value="{{a}}">
+                                            <input type="hidden" name="current_dir" value="{{current}}" >
+                                            <div class="form-group">
+                                                <select name="destination" id="" class="form-control" >
+                                                    {% for a in filelist.folder %}
+                                                    <option value="{{current}}/{{a}}">{{a}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <button type="submit"  class="btn btn-primary btn-sm">move</button>
+                                            </div>
+                                            <!-- <input type="submit" value="move" class="btn btn-primary"> -->
+                                        </div>
+                                    </form>
                                 </td>
-                                    
                             </tr>
                             
                         {% endfor %}

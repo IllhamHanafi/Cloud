@@ -278,17 +278,22 @@ def delete_file():
         size = sizeof_fmt(size)
         return render_template('home.html', filelist=list_list(current), current=current, size=size)
 
-@app.route('/move', methods=['GET'])
+@app.route('/move', methods=['POST'])
 def move():
-    move_to = CURRENT_WORKING_DIRECTORY+'/sempre'
-    file = request.args.get('object')
-    current = request.args.get('current_dir')
-    move_to_path = move_to+'/'+file
+    # move_to = CURRENT_WORKING_DIRECTORY+'/sempre'
+    file = request.form.get('file')
+    current = request.form.get('current_dir')
+    destination = request.form.get('destination')
     source = current+'/'+file
-    shutil.move(source,move_to_path)
-
+    dest = destination+'/'+file
+    # move_to_path = move_to+'/'+file
+    # source = current+'/'+file
+    shutil.move(source,dest)
+    # hasil = request.form
+    # hasil = jsonify(hasil)
     return redirect('/')
-    # return source+' '+move_to_path
+    # return 'nama file '+file+' current : '+current+' dest : '+destination
+    # return hasil
 
 
 if __name__ == "__main__":
