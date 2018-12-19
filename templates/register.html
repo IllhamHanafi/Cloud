@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="/static/style.css">
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
 {% block body %}
 
 <form action="/register" method="POST">
@@ -21,6 +20,12 @@
             </div>
         </div>
     </div>
+
+    <div class="login center">
+       <div class="col-xs-1 app-title" style="color: #000000">
+           <span>have an account? <a href="{{ url_for('login') }}"> Sign In</a></span>
+       </div>
+    </div>
     <script>
             {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
@@ -31,4 +36,5 @@
             {% endwith %}
         </script>
 </form>
+    
 {% endblock %}

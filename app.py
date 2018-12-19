@@ -20,11 +20,20 @@ app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
 # index = AutoIndex(app, USER_UPLOAD_FOLDER, add_url_rules=False)
 
 a_model = Auth_Model()
-activeToken = ''
+activeToken = '' #globalVariableforToken
 Bootstrap(app)
 
-def authenticate():
-    flag_authorized = a_model.cek_token(activeToken)
+def printToken():
+    if activeToken == '':
+        return None
+    elif not authenticate(activeToken):
+        return None
+    else:
+        return activeToken
+
+
+def authenticate(checkedToken):
+    flag_authorized = a_model.cek_token(checkedToken)
     if (flag_authorized is None):
         return False
     else:
@@ -54,8 +63,6 @@ def list_diretory(path):
         'folder':[]
     }
     files = os.listdir(path)
-    
-    
     return files
 
 def list_list(path):
@@ -82,11 +89,22 @@ def list_list(path):
 
 @app.route("/")
 def home():
-    if not authenticate():
+    if not authenticate(activeToken):
         return redirect('/login')
     else:
         # return render_template('home.html', filelist=make_tree(USER_UPLOAD_FOLDER))
         return render_template('home.html', filelist=list_list(USER_UPLOAD_FOLDER))
+
+@app.route("/token")
+def mytoken():
+    return printToken()
+
+@app.route("/cektoken/<token>")
+def mytoktoken(token):
+    if authenticate(token):
+        return 'token benar'
+    else:
+        return 'token salah'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,9 +115,10 @@ def login():
             USER_UPLOAD_FOLDER = UPLOAD_FOLDER + '/' + request.form['username']
             app.config['USER_UPLOAD_FOLDER'] = USER_UPLOAD_FOLDER
             activeToken = a_model.get_token(request.form['username'], users=users_list)
+            flash('OK', 'success')
             return redirect('/')
         else:
-            flash('Wrong Username / Password')
+            flash('Wrong Username / Password', 'error')
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -129,7 +148,7 @@ def logout():
 
 @app.route("/upload")
 def upload():
-    if not authenticate():
+    if not authenticate(activeToken):
         return redirect('/login')
     else:
         return render_template('upload.html')
@@ -188,7 +207,7 @@ def testlist():
 
 @app.route('/index')
 def autoindex():
-    if not authenticate():
+    if not authenticate(activeToken):
         return redirect('/login')
     else:
         hasil = list_diretory(USER_UPLOAD_FOLDER)
