@@ -50,8 +50,8 @@
                     <tbody>
                         {% for a in filelist.folder %}
                             <tr>
-                                <td><a href="/home?current_dir={{current}}&folder={{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
-                                <td><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <td ><a href="/home?current_dir={{current}}&folder={{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
+                                <td colspan="2"><center><a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a></center></td>
                             </tr>
                         {% endfor %}
                         {% for a in filelist.files %}
@@ -59,8 +59,13 @@
                                 <td><a href="/open?current_dir={{current}}&file={{a}}" target="_blank" >{{a}}</a></td>
                                 <td><center>
                                     <a href="/download/current_dir={{current}}&file={{a}}"><i class="fa fa-download"></i></a>
+                                    </center>
+                                </td>
+                            <td><center>
+
                                     <a href="/delete?current_dir={{current}}&object={{a}}"><i class="fa fa-trash"></i></a>
-                                    </center></td>
+                                    </center>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
