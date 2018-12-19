@@ -208,11 +208,11 @@ def uploader():
         if file.filename == '':
             flash('No selected file')
             return render_template('home.html', filelist=list_list(current), current=current, size=size)
-        blob = file.read()
-        fileSize = len(blob)
-        if ((fileSize+rawSize) > (16*1024*1024)):
-            #kasih flash
-            return render_template('home.html', filelist=list_list(current), current=current, size=size)
+        # blob = file.read()
+        # fileSize = len(blob)
+        # if ((fileSize+rawSize) > (16*1024*1024)):
+        #     #kasih flash
+        #     return render_template('home.html', filelist=list_list(current), current=current, size=size)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filename = filename.replace("_", " ")
