@@ -36,16 +36,22 @@
                     <tbody>
                         {% for a in filelist.folder %}
                             <tr>
-                                <td class="col-lg-3"><a href="/open/{{currentDirectory}}{{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
+                                <td><a href="/open/{{currentDirectory}}{{a}}"> <span><i class="fa fa-folder"></i></span> {{a}}</a></td>
                                 <!-- <td class="col-lg-3" ><a href="/download/{{a}}"><i class="fa fa-download"></i></a></td> -->
-                                <td><center><a href="/delete/{{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <td>
+                                    <center>
+                                        <a href="/delete/{{a}}"><i class="fa fa-trash"></i></a>
+                                    </center>
+                                </td>
                             </tr>
                         {% endfor %}
                         {% for a in filelist.files %}
                             <tr>
                                 <td><a href="/open/{{a}}" target="_blank" >{{a}}</a></td>
-                                <td><center><a href="/download/{{a}}"><i class="fa fa-download"></i></a></center></td>
-                                <td><center><a href="/delete/{{a}}"><i class="fa fa-trash"></i></a></center></td>
+                                <td><center>
+                                    <a href="/download/{{a}}"><i class="fa fa-download"></i></a>
+                                    <a href="/delete/{{a}}"><i class="fa fa-trash"></i></a>
+                                </center></td>
                             </tr>
                         {% endfor %}
                     </tbody>
