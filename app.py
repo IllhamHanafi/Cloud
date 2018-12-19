@@ -220,13 +220,12 @@ def open(file):
 
 @app.route('/makedir', methods=['POST'])
 def make_dir():
+    current = request.form.get('current_dir')
     directory = request.form.get('folder')
-    folder = CURRENT_WORKING_DIRECTORY+'/'+directory
+    folder = current+'/'+directory
     if not os.path.exists(folder):
         os.makedirs(folder)
-        return redirect(url_for('home'))
-    else:
-        return redirect(url_for('home'))
+    return render_template('home.html', filelist=list_list(current), current=current)
 
 @app.route('/delete', methods=['GET'])
 def delete_file():
